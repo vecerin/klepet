@@ -34,7 +34,16 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
+  }
+
+  var slike = "";
+  slike = $('#poslji-sporocilo').val().match(/(http){1}(s)?(:\/\/).*\.(jpg|png|gif)/ig);
+  
+  if (slike != null)
+  for (var i=0; i < slike.length; i++) {
+    $('#sporocila').append($('<div style="margin-left: 20px"></div>').html("<img src=\"" + slike[i] + "\" width=\"200\"></img>"));
   }
 
   $('#poslji-sporocilo').val('');
@@ -90,6 +99,11 @@ $(document).ready(function() {
   socket.on('sporocilo', function (sporocilo) {
     var novElement = divElementEnostavniTekst(sporocilo.besedilo);
     $('#sporocila').append(novElement);
+    
+    var slike = sporocilo.besedilo.match(/(http){1}(s)?(:\/\/).*\.(jpg|png|gif)/ig);
+    for (var i=0; i < slike.length; i++) {
+      $('#sporocila').append($('<div style="margin-left: 20px"></div>').html("<img src=\"" + slike[i] + "\" width=\"200\"></img>"));
+    }
   });
   
   socket.on('kanali', function(kanali) {
