@@ -12,6 +12,14 @@ function divElementHtmlTekst(sporocilo) {
   return $('<div></div>').html('<i>' + sporocilo + '</i>');
 }
 
+var izbraniUporabnik = "";
+
+function divElementUporabnik(ime) {
+  var element = $('<div class="username" style="font-weight: bold; cursor: pointer;" onclick="nastaviZasebno.call(this)">'+ime+'</div>');
+  if (ime == izbraniUporabnik) element.css("background-color", "lightgray");
+  return element;
+}
+
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
@@ -30,6 +38,12 @@ function procesirajVnosUporabnika(klepetApp, socket) {
   }
 
   $('#poslji-sporocilo').val('');
+}
+
+function nastaviZasebno(element) {
+  izbraniUporabnik = this.innerHTML;
+  $('#poslji-sporocilo').val("/zasebno \"" + izbraniUporabnik + "\" ");
+  $('#poslji-sporocilo').focus();
 }
 
 var socket = io.connect();
@@ -97,7 +111,7 @@ $(document).ready(function() {
   socket.on('uporabniki', function(uporabniki) {
     $('#seznam-uporabnikov').empty();
     for (var i=0; i < uporabniki.length; i++) {
-      $('#seznam-uporabnikov').append(divElementEnostavniTekst(uporabniki[i]));
+      $('#seznam-uporabnikov').append(divElementUporabnik(uporabniki[i]));
     }
   });
 
